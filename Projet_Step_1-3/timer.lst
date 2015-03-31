@@ -1,0 +1,223 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000                 thumb
+    2 00000000                 area             moncode, code, readonly
+    3 00000000                 export           timer_callback
+    4 00000000                 import           etat_tache
+    5 00000000         
+    6 00000000 40010C10 
+                       GPIOB_BSRR
+                               equ              0x40010C10  ; Bit Set/Reset reg
+                                                            ister
+    7 00000000         
+    8 00000000 4000043C 
+                       TIM3_CCR3
+                               equ              0x4000043C  ; adresse registre 
+                                                            PWM
+    9 00000000         
+   10 00000000 00000000 
+                       E_POS   equ              0
+   11 00000000 00000004 
+                       E_TAI   equ              4
+   12 00000000 00000008 
+                       E_SON   equ              8
+   13 00000000 0000000C 
+                       E_RES   equ              12
+   14 00000000 00000010 
+                       E_PER   equ              16
+   15 00000000         
+   16 00000000         
+   17 00000000         timer_callback
+                               proc
+   18 00000000         
+   19 00000000 4911            LDR              R1, =etat_tache ;adresse du pre
+                                                            mier élément de la 
+                                                            structure (E_POS)
+   20 00000002 684A            LDR              R2, [R1, #E_TAI] ;adresse de la
+                                                             variable E_TAI
+   21 00000004 680B            LDR              R3, [R1, #E_POS]
+   22 00000006 4293            CMP              R3,R2       ; diff posi-taille
+   23 00000008 D104            BNE              SON
+   24 0000000A         
+   25 0000000A 4C10            LDR              R4,=TIM3_CCR3
+   26 0000000C F04F 0500       MOV              R5,#0
+   27 00000010 601D            STR              R5, [R3]
+   28 00000012 E018            B                FIN
+   29 00000014         
+   30 00000014         SON
+   31 00000014 F8D1 9008       LDR              R9, [R1, #E_SON] ; adresse mémo
+                                                            ire E_SON (E_POS+8)
+                                                            
+   32 00000018 F939 8013       LDRSH            R8, [R9,R3, lsl#1] ; chargement
+                                                             de l'échantillon, 
+                                                            décalage à gauche d
+                                                            e R9+(R3*2) (=posit
+                                                            ion dans le son)
+   33 0000001C         ; pour prendre 2*16bits d'échantillon 
+   34 0000001C         
+   35 0000001C         ;calibrage 
+   36 0000001C F508 3880       ADD              R8, #65536
+   37 00000020 F04F 0A02       MOV              R10, #2
+   38 00000024 FBB8 F8FA       UDIV             R8, R10
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   39 00000028         ;résolution
+   40 00000028 F44F 3980       MOV              R9, #65536
+   41 0000002C 68C8            LDR              R0, [R1, #E_RES] ; récupération
+                                                             de la résolution 
+   42 0000002E FBB9 F9F0       UDIV             R9,R0
+   43 00000032 FBB8 F8F9       UDIV             R8,R9
+   44 00000036         
+   45 00000036         ;envoie du son 
+   46 00000036 4C05            LDR              R4,=TIM3_CCR3
+   47 00000038 F8C4 8000       STR              R8, [R4]
+   48 0000003C         
+   49 0000003C         ;incrémentation position
+   50 0000003C 680B            LDR              R3, [R1, #E_POS]
+   51 0000003E F103 0301       ADD              R3, #1
+   52 00000042 600B            STR              R3, [R1]
+   53 00000044         
+   54 00000044         
+   55 00000044         
+   56 00000044 E7FF            B                FIN
+   57 00000046         
+   58 00000046 4770    FIN     BX               lr
+   59 00000048         
+   60 00000048                 endp
+   61 00000048         
+   62 00000048                 end
+              00000000 
+              4000043C 
+Command Line: --debug --xref --cpu=Cortex-M3 --apcs=interwork --depend=timer.d 
+-otimer.o -IC:\Keil\ARM\RV31\INC -IC:\Keil\ARM\CMSIS\Include -IC:\Keil\ARM\Inc\
+ST\STM32F10x --predefine="__EVAL SETA 1" --predefine="__MICROLIB SETA 1" --list
+=timer.lst timer.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+FIN 00000046
+
+Symbol: FIN
+   Definitions
+      At line 58 in file timer.s
+   Uses
+      At line 28 in file timer.s
+      At line 56 in file timer.s
+
+SON 00000014
+
+Symbol: SON
+   Definitions
+      At line 30 in file timer.s
+   Uses
+      At line 23 in file timer.s
+Comment: SON used once
+moncode 00000000
+
+Symbol: moncode
+   Definitions
+      At line 2 in file timer.s
+   Uses
+      None
+Comment: moncode unused
+timer_callback 00000000
+
+Symbol: timer_callback
+   Definitions
+      At line 17 in file timer.s
+   Uses
+      At line 3 in file timer.s
+Comment: timer_callback used once
+4 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+E_PER 00000010
+
+Symbol: E_PER
+   Definitions
+      At line 14 in file timer.s
+   Uses
+      None
+Comment: E_PER unused
+E_POS 00000000
+
+Symbol: E_POS
+   Definitions
+      At line 10 in file timer.s
+   Uses
+      At line 21 in file timer.s
+      At line 50 in file timer.s
+
+E_RES 0000000C
+
+Symbol: E_RES
+   Definitions
+      At line 13 in file timer.s
+   Uses
+      At line 41 in file timer.s
+Comment: E_RES used once
+E_SON 00000008
+
+Symbol: E_SON
+   Definitions
+      At line 12 in file timer.s
+   Uses
+      At line 31 in file timer.s
+Comment: E_SON used once
+E_TAI 00000004
+
+Symbol: E_TAI
+   Definitions
+      At line 11 in file timer.s
+   Uses
+      At line 20 in file timer.s
+Comment: E_TAI used once
+GPIOB_BSRR 40010C10
+
+Symbol: GPIOB_BSRR
+   Definitions
+      At line 6 in file timer.s
+   Uses
+      None
+Comment: GPIOB_BSRR unused
+TIM3_CCR3 4000043C
+
+Symbol: TIM3_CCR3
+   Definitions
+      At line 8 in file timer.s
+   Uses
+      At line 25 in file timer.s
+      At line 46 in file timer.s
+
+7 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+etat_tache 00000000
+
+Symbol: etat_tache
+   Definitions
+      At line 4 in file timer.s
+   Uses
+      At line 19 in file timer.s
+Comment: etat_tache used once
+1 symbol
+346 symbols in table

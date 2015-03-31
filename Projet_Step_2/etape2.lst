@@ -1,0 +1,157 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ; ce programme est pour l'assembleur RealView (Keil)
+    2 00000000                 thumb
+    3 00000000                 area             moncode, code, readonly
+    4 00000000                 export           Rayon       ; créée en ASM donc
+                                                             à exporter pour le
+                                                             c
+    5 00000000                 import           resultat    ; créé en c donc im
+                                                            port en ASM
+    6 00000000                 import           TabCos      ; créé dans Trigo.a
+                                                            sm
+    7 00000000                 import           TabSin      ; créé dans Trigo.a
+                                                            sm
+    8 00000000         
+    9 00000000         
+   10 00000000         Rayon   proc
+   11 00000000         
+   12 00000000         ; MAtlab a généré les tabs en 1.15 (qui ne permet pas d'
+                       obtenir 1 précisément)
+   13 00000000         ; Un carré va être sous format BRUT 1+1.15+15=2.30 et le
+                       s sommes sous format 2.30
+   14 00000000         
+   15 00000000 490A            ldr              R1,=resultat ; load de l'@ de v
+                                                            ar globale résultat
+                                                            
+   16 00000002 4A0B            ldr              R2,=TabCos  ; premier load de l
+                                                            '@ de var globale (
+                                                            tab en lui-même pas
+                                                             son contenu)
+   17 00000004 4B0B            ldr              R3,=TabSin  ; premier load de l
+                                                            '@ de var globale (
+                                                            tab en lui-même pas
+                                                             son contenu)
+   18 00000006         
+   19 00000006 EA4F 0040       LSL              R0, #1      ; *2 car on travail
+                                                            le sur 16bits et no
+                                                            n à l'octet voir al
+                                                            ignement données co
+                                                            urs ASM
+   20 0000000A         ;ldr R1, [R1, R0] inutile car on n'a pas besoin de la va
+                       leur contenu à l'@ resultat
+   21 0000000A 5E12            ldrsh            R2, [R2, R0] ; s: signé h: sur 
+                                                            16 bits et r2,r0 ca
+                                                            r on se déplace de 
+                                                            base + r0
+   22 0000000C 5E1B            ldrsh            R3, [R3, R0]
+   23 0000000E         
+   24 0000000E FB03 F303       MUL              R3,R3       ; mise au carré du 
+                                                            cos
+   25 00000012 EA4F 4323       ASR              R3, #16     ; décalage arith qu
+                                                            i modifie que 'F' r
+                                                            etour en 2.14 pluto
+                                                            t que du 2.30(cf su
+                                                            jet) 
+   26 00000016 FB02 F202       MUL              R2,R2       ; mise au carré du 
+                                                            sin
+   27 0000001A EA4F 4222       ASR              R2, #16     ; décalage arith qu
+                                                            i modifie que 'F' r
+                                                            etour en 2.14 pluto
+                                                            t que du 2.30(cf su
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+                                                            jet)
+   28 0000001E B410            PUSH             {R4}        ; d'après conventio
+                                                            n AAPCS les registr
+                                                            es R4 à R12 doivent
+                                                             voir leur état con
+                                                            servé donc puch/pop
+                                                            
+   29 00000020 EB03 0402       ADD              R4, R3, R2  ; somme du cos et d
+                                                            u sin dans R4
+   30 00000024         ;ATTENTION resultat contient du 32bits, donc saut de 2*1
+                       6bits
+   31 00000024         ;Convention Cortex M3 ARM remplissage du registre en LIT
+                       TLE ENDIAN
+   32 00000024 F841 4010       STR              R4, [R1,R0, lsl#1] ; *2 donc ro
+                                                             de base *4 (multip
+                                                            le 32 bit) pas de m
+                                                            odification de R0 a
+                                                            près cette instruct
+                                                            ion
+   33 00000028 BC10            POP              {R4}
+   34 0000002A 4770            BX               lr
+   35 0000002C                 endp
+   36 0000002C         
+   37 0000002C                 end
+              00000000 
+              00000000 
+              00000000 
+Command Line: --debug --xref --cpu=Cortex-M3 --apcs=interwork --depend=etape2.d
+ -oetape2.o -IC:\Keil\ARM\RV31\INC -IC:\Keil\ARM\CMSIS\Include -IC:\Keil\ARM\In
+c\ST\STM32F10x --predefine="__EVAL SETA 1" --predefine="__MICROLIB SETA 1" --li
+st=etape2.lst etape2.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+Rayon 00000000
+
+Symbol: Rayon
+   Definitions
+      At line 10 in file etape2.s
+   Uses
+      At line 4 in file etape2.s
+Comment: Rayon used once
+moncode 00000000
+
+Symbol: moncode
+   Definitions
+      At line 3 in file etape2.s
+   Uses
+      None
+Comment: moncode unused
+2 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+TabCos 00000000
+
+Symbol: TabCos
+   Definitions
+      At line 6 in file etape2.s
+   Uses
+      At line 16 in file etape2.s
+Comment: TabCos used once
+TabSin 00000000
+
+Symbol: TabSin
+   Definitions
+      At line 7 in file etape2.s
+   Uses
+      At line 17 in file etape2.s
+Comment: TabSin used once
+resultat 00000000
+
+Symbol: resultat
+   Definitions
+      At line 5 in file etape2.s
+   Uses
+      At line 15 in file etape2.s
+Comment: resultat used once
+3 symbols
+339 symbols in table

@@ -1,0 +1,147 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ; ce programme est pour l'assembleur RealView (Keil)
+    2 00000000                 thumb
+    3 00000000                 area             moncode, code, readonly
+    4 00000000                 export           Temporisation
+    5 00000000                 export           Generateur
+    6 00000000         ;
+    7 00000000         Temporisation
+                               proc
+    8 00000000 F04F 0200       mov              r2, #0      ; 1ere instruction 
+                                                            de la fonction (exe
+                                                            mple)
+    9 00000004 4282    LOOP    CMP              R2,R0
+   10 00000006 D004            BEQ              FIN
+   11 00000008 BF00            NOP
+   12 0000000A BF00            NOP
+   13 0000000C F102 0201       ADD              R2,#1       ;
+   14 00000010 E7F8            B                LOOP
+   15 00000012 4770    FIN     bx               lr
+   16 00000014                 endp
+   17 00000014         ;
+   18 00000014         Generateur
+                               proc
+   19 00000014 F04F 0C09       mov              r12, #9
+   20 00000018 FB00 F00C       mul              r0, r0, r12 ; on mul r0 par 9 p
+                                                            our s'affranchir du
+                                                             pbl de la freq qua
+                                                            rtz
+   21 0000001C         SAUT
+   22 0000001C 40010C10 
+                       GPIOB_BSRR
+                               equ              0x40010C10  ; Bit Set/Reset reg
+                                                            ister
+   23 0000001C         
+   24 0000001C 4B06            ldr              r3, =GPIOB_BSRR 
+                                                            ; mise a un de PB1
+   25 0000001E 2102            movs             r1, #0x00000002
+   26 00000020 6019            str              r1, [r3]    ; l'adresse dans R3
+                                                             reçoit le contenu 
+                                                            de R1
+   27 00000022         
+   28 00000022 F7FF FFFE       BL               Temporisation
+   29 00000026         
+   30 00000026 4B04            ldr              r3, =GPIOB_BSRR ; mise a zero d
+                                                            e PB1
+   31 00000028 F45F 3100       movs             r1, #0x00020000
+   32 0000002C 6019            str              r1, [r3]    ; idem
+   33 0000002E         
+   34 0000002E         ;ATTENTION on n'a pas modifié tempo pour x9
+   35 0000002E F7FF FFFE       BL               Temporisation
+   36 00000032         
+   37 00000032         
+   38 00000032 E7F3            B                SAUT
+   39 00000034 4770            BX               lr
+   40 00000036                 endp
+   41 00000036         
+   42 00000036                 end
+              00 00 40010C10 
+Command Line: --debug --xref --cpu=Cortex-M3 --apcs=interwork --depend=Tempo.d 
+-oTempo.o -IC:\Keil\ARM\RV31\INC -IC:\Keil\ARM\CMSIS\Include -IC:\Keil\ARM\Inc\
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+ST\STM32F10x --predefine="__EVAL SETA 1" --predefine="__MICROLIB SETA 1" --list
+=.\Tempo.lst Sources\Tempo.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+FIN 00000012
+
+Symbol: FIN
+   Definitions
+      At line 15 in file Sources\Tempo.s
+   Uses
+      At line 10 in file Sources\Tempo.s
+Comment: FIN used once
+Generateur 00000014
+
+Symbol: Generateur
+   Definitions
+      At line 18 in file Sources\Tempo.s
+   Uses
+      At line 5 in file Sources\Tempo.s
+Comment: Generateur used once
+LOOP 00000004
+
+Symbol: LOOP
+   Definitions
+      At line 9 in file Sources\Tempo.s
+   Uses
+      At line 14 in file Sources\Tempo.s
+Comment: LOOP used once
+SAUT 0000001C
+
+Symbol: SAUT
+   Definitions
+      At line 21 in file Sources\Tempo.s
+   Uses
+      At line 38 in file Sources\Tempo.s
+Comment: SAUT used once
+Temporisation 00000000
+
+Symbol: Temporisation
+   Definitions
+      At line 7 in file Sources\Tempo.s
+   Uses
+      At line 4 in file Sources\Tempo.s
+      At line 28 in file Sources\Tempo.s
+      At line 35 in file Sources\Tempo.s
+
+moncode 00000000
+
+Symbol: moncode
+   Definitions
+      At line 3 in file Sources\Tempo.s
+   Uses
+      None
+Comment: moncode unused
+6 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+GPIOB_BSRR 40010C10
+
+Symbol: GPIOB_BSRR
+   Definitions
+      At line 22 in file Sources\Tempo.s
+   Uses
+      At line 24 in file Sources\Tempo.s
+      At line 30 in file Sources\Tempo.s
+
+1 symbol
+341 symbols in table

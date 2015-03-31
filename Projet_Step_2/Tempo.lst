@@ -1,0 +1,50 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ; ce programme est pour l'assembleur RealView (Keil)
+    2 00000000                 thumb
+    3 00000000                 area             moncode, code, readonly
+    4 00000000                 export           Temporisation
+    5 00000000         ;
+    6 00000000         Temporisation
+                               proc
+    7 00000000 F04F 0200       mov              r2, #0      ; 1ere instruction 
+                                                            de la fonction (exe
+                                                            mple)
+    8 00000004         
+    9 00000004 4770            bx               lr          ; dernière instruct
+                                                            ion de la fonction
+   10 00000006                 endp
+   11 00000006         ;
+   12 00000006                 end
+Command Line: --debug --xref --cpu=Cortex-M3 --apcs=interwork --depend=Tempo.d 
+-oTempo.o -IC:\Keil\ARM\RV31\INC -IC:\Keil\ARM\CMSIS\Include -IC:\Keil\ARM\Inc\
+ST\STM32F10x --predefine="__EVAL SETA 1" --predefine="__MICROLIB SETA 1" --list
+=.\Tempo.lst Sources\Tempo.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+Temporisation 00000000
+
+Symbol: Temporisation
+   Definitions
+      At line 6 in file Sources\Tempo.s
+   Uses
+      At line 4 in file Sources\Tempo.s
+Comment: Temporisation used once
+moncode 00000000
+
+Symbol: moncode
+   Definitions
+      At line 3 in file Sources\Tempo.s
+   Uses
+      None
+Comment: moncode unused
+2 symbols
+334 symbols in table

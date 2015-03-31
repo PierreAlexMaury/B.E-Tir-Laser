@@ -1,0 +1,114 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000                 thumb
+    2 00000000                 area             moncode, code, readonly
+    3 00000000                 export           timer_callback
+    4 00000000                 import           etat
+    5 00000000         
+    6 00000000 40010C10 
+                       GPIOB_BSRR
+                               equ              0x40010C10  ; Bit Set/Reset reg
+                                                            ister
+    7 00000000         
+    8 00000000         timer_callback
+                               proc
+    9 00000000 4A0A            LDR              r2,=etat
+   10 00000002 B404            PUSH             {r2}
+   11 00000004 6812            LDR              r2,[r2]
+   12 00000006 2A00            CMP              r2, #0
+   13 00000008 D107            BNE              maz
+   14 0000000A 4B09            ldr              r3, =GPIOB_BSRR 
+                                                            ; mise a un de PB1
+   15 0000000C 2102            movs             r1, #0x00000002
+   16 0000000E 6019            str              r1, [r3]    ; l'adresse dans R3
+                                                             reçoit le contenu 
+                                                            de R1
+   17 00000010 F04F 0401       MOV              r4, #1
+   18 00000014 BC04            pop              {r2}
+   19 00000016 6014            str              r4,[r2]
+   20 00000018 4770            bx               lr
+   21 0000001A         maz
+   22 0000001A 4B05            ldr              r3, =GPIOB_BSRR ; mise a zero d
+                                                            e PB1
+   23 0000001C F45F 3100       movs             r1, #0x00020000
+   24 00000020 6019            str              r1, [r3]    ; idem
+   25 00000022 F04F 0400       MOV              r4, #0
+   26 00000026 BC04            pop              {r2}
+   27 00000028 6014            str              r4, [r2]
+   28 0000002A 4770            bx               lr
+   29 0000002C                 endp
+   30 0000002C         
+   31 0000002C                 end
+              00000000 
+              40010C10 
+Command Line: --debug --xref --cpu=Cortex-M3 --apcs=interwork --depend=timer.d 
+-otimer.o -IC:\Keil\ARM\RV31\INC -IC:\Keil\ARM\CMSIS\Include -IC:\Keil\ARM\Inc\
+ST\STM32F10x --predefine="__EVAL SETA 1" --predefine="__MICROLIB SETA 1" --list
+=timer.lst timer.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+maz 0000001A
+
+Symbol: maz
+   Definitions
+      At line 21 in file timer.s
+   Uses
+      At line 13 in file timer.s
+Comment: maz used once
+moncode 00000000
+
+Symbol: moncode
+   Definitions
+      At line 2 in file timer.s
+   Uses
+      None
+Comment: moncode unused
+timer_callback 00000000
+
+Symbol: timer_callback
+   Definitions
+      At line 8 in file timer.s
+   Uses
+      At line 3 in file timer.s
+Comment: timer_callback used once
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+GPIOB_BSRR 40010C10
+
+Symbol: GPIOB_BSRR
+   Definitions
+      At line 6 in file timer.s
+   Uses
+      At line 14 in file timer.s
+      At line 22 in file timer.s
+
+1 symbol
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+etat 00000000
+
+Symbol: etat
+   Definitions
+      At line 4 in file timer.s
+   Uses
+      At line 9 in file timer.s
+Comment: etat used once
+1 symbol
+339 symbols in table
